@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         activeTab: 'practice',
         currentRetryFn: null,
         practice: { text: '', currentIndex: 0, startTime: null, timer: null, timeLimit: 30, mode: 'time', category: 'quotes', errors: 0, typedKeys: 0, isActive: false, wpmHistory: [] },
-        training: { activeLessonIndex: 0, text: '', currentIndex: 0, startTime: null, errors: 0, typedKeys: 0, isActive: false, completedLessons: new Set() },
+        training: { activeLessonIndex: 0, text: '', currentIndex: 0, startTime: null, errors: 0, typedKeys: 0, isActive: false, completedLessons: new Set(JSON.parse(localStorage.getItem('ntype_training_progress')) || []) },
         aiTopic: { text: '', currentIndex: 0, startTime: null, errors: 0, typedKeys: 0, isActive: false, currentTopic: '', wpmHistory: [] },
         history: JSON.parse(localStorage.getItem('ntype_history')) || []
     };
@@ -840,6 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (state.training.currentIndex >= state.training.text.length) {
                 state.training.completedLessons.add(state.training.activeLessonIndex);
+                localStorage.setItem('ntype_training_progress', JSON.stringify(Array.from(state.training.completedLessons)));
                 showToast('Lesson Complete!', 'success');
                 playSound('success');
                 
