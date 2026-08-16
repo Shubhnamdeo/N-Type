@@ -67,11 +67,12 @@
       <div class="logo">
         <span class="logo-icon"><i class="fa-solid fa-keyboard"></i></span>
         <span class="logo-text">N-<span>Type</span></span>
+        <span class="logo-desc" style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.75rem; font-weight: normal; font-family: var(--font-sans); letter-spacing: 0;">| The Ultimate Typing Practice Platform</span>
       </div>
       <nav id="main-nav">
-        <button class="nav-btn active" data-tab="practice"><i class="fa-solid fa-bolt"></i><span class="nav-label"> Practice</span></button>
-        <button class="nav-btn" data-tab="training"><i class="fa-solid fa-graduation-cap"></i><span class="nav-label"> Training</span></button>
-        <button class="nav-btn" data-tab="ai-topic"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="nav-label"> AI Topic</span></button>
+        <button class="nav-btn active nav-btn-large" data-tab="training"><i class="fa-solid fa-graduation-cap"></i><span class="nav-label"> Training</span></button>
+        <button class="nav-btn nav-btn-large" data-tab="ai-topic"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="nav-label"> AI Topic</span></button>
+        <button class="nav-btn" data-tab="practice"><i class="fa-solid fa-bolt"></i><span class="nav-label"> Practice</span></button>
         <button class="nav-btn" data-tab="games"><i class="fa-solid fa-gamepad"></i><span class="nav-label"> Games</span></button>
         <button class="nav-btn" data-tab="stats"><i class="fa-solid fa-chart-line"></i><span class="nav-label"> Stats</span></button>
       </nav>
@@ -85,7 +86,7 @@
   <main class="main-content">
 
     <!-- Tab 1: Practice -->
-    <section id="tab-practice" class="tab-content active">
+    <section id="tab-practice" class="tab-content">
       <div class="card panel-controls">
         <div class="test-modes">
           <button class="mode-btn active" data-mode="time" data-val="15">15s</button>
@@ -133,7 +134,7 @@
     </section>
 
     <!-- Tab 2: Training -->
-    <section id="tab-training" class="tab-content">
+    <section id="tab-training" class="tab-content active">
       <div class="training-grid">
         <div class="card training-sidebar">
           <h3>Starter Curriculum</h3>

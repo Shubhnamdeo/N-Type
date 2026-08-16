@@ -312,7 +312,7 @@ nav {
 }
 
 .nav-btn {
-  background-color: transparent;
+  background: transparent;
   border: 1px solid transparent;
   color: var(--text-secondary);
   padding: 0.55rem 1.1rem;
@@ -325,6 +325,12 @@ nav {
   align-items: center;
   gap: 0.4rem;
   transition: var(--transition-smooth);
+}
+
+.nav-btn.nav-btn-large {
+  font-size: 1.05rem;
+  padding: 0.65rem 1.3rem;
+  color: var(--text-primary);
 }
 
 .nav-btn:hover {
