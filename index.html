@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>N-Type | Master Your Keyboard</title>
+  <meta name="description" content="N-Type is a premium interactive typing platform with AI-powered lessons, structured training, and arcade mini-games.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+
+  <canvas id="bg-particles"></canvas>
+  <canvas id="confetti-canvas"></canvas>
+
+  <div id="toast-container"></div>
+
+  <!-- Results Modal -->
+  <div class="modal-overlay hidden" id="results-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="result-title">Test Complete!</h2>
+        <p id="result-subtitle">Here's how you performed</p>
+      </div>
+      <div class="result-stats-grid">
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-wpm">0</div>
+          <div class="result-stat-label">WPM</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-accuracy">0%</div>
+          <div class="result-stat-label">Accuracy</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-raw-wpm">0</div>
+          <div class="result-stat-label">Raw WPM</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-time">0s</div>
+          <div class="result-stat-label">Duration</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-chars">0</div>
+          <div class="result-stat-label">Characters</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value" id="result-errors">0</div>
+          <div class="result-stat-label">Errors</div>
+        </div>
+      </div>
+      <div class="result-chart-container">
+        <canvas id="result-chart" height="120"></canvas>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="result-close-btn"><i class="fa-solid fa-xmark"></i> Close</button>
+        <button class="btn btn-primary" id="result-retry-btn"><i class="fa-solid fa-rotate-right"></i> Try Again</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-keyboard"></i></span>
+        <span class="logo-text">N-<span>Type</span></span>
+      </div>
+      <nav id="main-nav">
+        <button class="nav-btn active" data-tab="practice"><i class="fa-solid fa-bolt"></i><span class="nav-label"> Practice</span></button>
+        <button class="nav-btn" data-tab="training"><i class="fa-solid fa-graduation-cap"></i><span class="nav-label"> Training</span></button>
+        <button class="nav-btn" data-tab="ai-topic"><i class="fa-solid fa-wand-magic-sparkles"></i><span class="nav-label"> AI Topic</span></button>
+        <button class="nav-btn" data-tab="games"><i class="fa-solid fa-gamepad"></i><span class="nav-label"> Games</span></button>
+        <button class="nav-btn" data-tab="stats"><i class="fa-solid fa-chart-line"></i><span class="nav-label"> Stats</span></button>
+      </nav>
+      <div class="nav-controls">
+        <button id="theme-toggle" title="Toggle Theme"><i class="fa-solid fa-moon"></i></button>
+        <button id="sound-toggle" title="Toggle Sound"><i class="fa-solid fa-volume-high"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Tab 1: Practice -->
+    <section id="tab-practice" class="tab-content active">
+      <div class="card panel-controls">
+        <div class="test-modes">
+          <button class="mode-btn active" data-mode="time" data-val="15">15s</button>
+          <button class="mode-btn" data-mode="time" data-val="30">30s</button>
+          <button class="mode-btn" data-mode="time" data-val="60">60s</button>
+          <button class="mode-btn" data-mode="words" data-val="25">25 words</button>
+          <button class="mode-btn" data-mode="words" data-val="50">50 words</button>
+          <button class="mode-btn" data-mode="words" data-val="100">100 words</button>
+        </div>
+        <div class="category-selectors">
+          <button class="cat-btn active" data-cat="quotes"><i class="fa-solid fa-quote-left"></i> Quotes</button>
+          <button class="cat-btn" data-cat="code"><i class="fa-solid fa-code"></i> Code</button>
+          <button class="cat-btn" data-cat="words"><i class="fa-solid fa-font"></i> Words</button>
+        </div>
+      </div>
+
+      <div class="card typing-card">
+        <div class="stats-ribbon">
+          <div class="stat-pill">
+            <span class="label">WPM</span>
+            <span class="value" id="live-wpm">0</span>
+          </div>
+          <div class="stat-pill">
+            <span class="label">Accuracy</span>
+            <span class="value" id="live-acc">100%</span>
+          </div>
+          <div class="stat-pill">
+            <span class="label" id="timer-label"><i class="fa-regular fa-clock"></i> Time</span>
+            <span class="value" id="live-timer">15</span>
+          </div>
+        </div>
+
+        <div class="typing-container" id="typing-container" tabindex="0">
+          <div class="focus-error-overlay">
+            <i class="fa-solid fa-arrow-pointer"></i> Click here or press any key to focus
+          </div>
+          <div class="text-display" id="text-display"></div>
+          <input type="text" id="keyboard-input" class="hidden-input" autocomplete="off">
+        </div>
+
+        <div class="typing-footer">
+          <button id="restart-btn" class="btn btn-secondary"><i class="fa-solid fa-rotate-right"></i> Restart (Esc)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Training -->
+    <section id="tab-training" class="tab-content">
+      <div class="training-grid">
+        <div class="card training-sidebar">
+          <h3>Starter Curriculum</h3>
+          <p class="sidebar-desc">Learn touch typing key-by-key starting from the home row.</p>
+          <div class="lessons-list" id="lessons-list"></div>
+        </div>
+
+        <div class="training-arena">
+          <div class="card training-arena-card">
+            <div class="training-header">
+              <h2 id="lesson-title">Lesson 1: Home Row Foundation</h2>
+              <p id="lesson-subtitle">Mastering the F and J key positions.</p>
+            </div>
+
+            <div class="stats-ribbon">
+              <div class="stat-pill"><span class="label">WPM</span><span class="value" id="train-wpm">0</span></div>
+              <div class="stat-pill"><span class="label">Accuracy</span><span class="value" id="train-acc">100%</span></div>
+              <div class="stat-pill"><span class="label">Progress</span><span class="value" id="train-progress">0%</span></div>
+            </div>
+
+            <div class="typing-container" id="train-typing-container" tabindex="0">
+              <div class="focus-error-overlay">
+                <i class="fa-solid fa-arrow-pointer"></i> Click to start lesson
+              </div>
+              <div class="text-display" id="train-text-display"></div>
+              <input type="text" id="train-keyboard-input" class="hidden-input" autocomplete="off">
+            </div>
+
+            <div class="hand-visualizer">
+              <div class="hand left-hand">
+                <div class="finger f-pinky" data-finger="left-pinky"></div>
+                <div class="finger f-ring" data-finger="left-ring"></div>
+                <div class="finger f-middle" data-finger="left-middle"></div>
+                <div class="finger f-index" data-finger="left-index"></div>
+                <div class="finger f-thumb" data-finger="left-thumb"></div>
+              </div>
+              <div class="hand-center-label">Place index fingers on F and J</div>
+              <div class="hand right-hand">
+                <div class="finger f-thumb" data-finger="right-thumb"></div>
+                <div class="finger f-index" data-finger="right-index"></div>
+                <div class="finger f-middle" data-finger="right-middle"></div>
+                <div class="finger f-ring" data-finger="right-ring"></div>
+                <div class="finger f-pinky" data-finger="right-pinky"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: AI Topic -->
+    <section id="tab-ai-topic" class="tab-content">
+      <div class="card ai-generator-card">
+        <div class="ai-header">
+          <h2><i class="fa-solid fa-wand-magic-sparkles text-sparkle"></i> Learn & Type Any Topic</h2>
+          <p>Enter any topic and N-Type will generate a custom educational paragraph for you to read and type.</p>
+        </div>
+        <div class="ai-input-group">
+          <input type="text" id="ai-topic-input" placeholder="e.g. Black holes, Renaissance, JavaScript closures..." maxlength="80">
+          <button id="ai-generate-btn" class="btn btn-primary"><i class="fa-solid fa-bolt"></i> Generate</button>
+        </div>
+
+        <div class="settings-accordion">
+          <details>
+            <summary><i class="fa-solid fa-key"></i> Optional: Add your Gemini API Key</summary>
+            <div class="api-key-input-container">
+              <p class="api-info">Your API key is stored in local storage and never leaves your browser.</p>
+              <input type="password" id="gemini-api-key" placeholder="AIza... Your Gemini API Key">
+              <button id="save-api-key" class="btn btn-secondary">Save Key</button>
+            </div>
+          </details>
+        </div>
+
+        <div class="generation-loader hidden" id="generation-loader">
+          <div class="spinner"></div>
+          <p id="loader-status">Generating text...</p>
+        </div>
+      </div>
+
+      <div class="card typing-card hidden" id="ai-typing-arena">
+        <div class="ai-arena-header">
+          <h3 id="ai-arena-topic-title">Topic: Artificial Intelligence</h3>
+          <button class="btn btn-secondary btn-sm" id="ai-close-test"><i class="fa-solid fa-xmark"></i> Close</button>
+        </div>
+
+        <div class="stats-ribbon">
+          <div class="stat-pill"><span class="label">WPM</span><span class="value" id="ai-wpm">0</span></div>
+          <div class="stat-pill"><span class="label">Accuracy</span><span class="value" id="ai-acc">100%</span></div>
+          <div class="stat-pill"><span class="label">Progress</span><span class="value" id="ai-progress">0%</span></div>
+        </div>
+
+        <div class="typing-container" id="ai-typing-container" tabindex="0">
+          <div class="focus-error-overlay">
+            <i class="fa-solid fa-arrow-pointer"></i> Click to start typing
+          </div>
+          <div class="text-display" id="ai-text-display"></div>
+          <input type="text" id="ai-keyboard-input" class="hidden-input" autocomplete="off">
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Games -->
+    <section id="tab-games" class="tab-content">
+      <div class="games-grid">
+
+        <!-- Game 1: Key Laser -->
+        <div class="card game-card">
+          <div class="game-info">
+            <h2><i class="fa-solid fa-meteor"></i> Key Laser</h2>
+            <p>Letters rain down from above! Type them before they crash into your shield. Build combos and survive as long as you can.</p>
+            <div class="game-best-score">Personal Best: <span id="game-highscore">0</span></div>
+            <button id="start-game-btn" class="btn btn-primary btn-lg"><i class="fa-solid fa-play"></i> Launch Game</button>
+          </div>
+          <div class="game-canvas-container hidden" id="game-canvas-container">
+            <div class="game-hud">
+              <div>Score: <span id="game-score">0</span></div>
+              <div>Combo: <span id="game-combo">1x</span></div>
+              <div class="health-bar-container">Shield: <div id="game-health"></div></div>
+            </div>
+            <canvas id="game-canvas" width="800" height="450"></canvas>
+            <div class="game-overlay hidden" id="game-overlay">
+              <h2 id="game-overlay-title">GAME OVER</h2>
+              <p id="game-overlay-subtitle">Final Score: 0</p>
+              <button id="game-retry-btn" class="btn btn-primary">Play Again</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game 2: Word Sprint -->
+        <div class="card game-card">
+          <div class="game-info">
+            <h2><i class="fa-solid fa-forward-fast"></i> Word Sprint</h2>
+            <p>Type complete words as fast as you can in 60 seconds. Build streaks for bonus points!</p>
+            <div class="game-best-score">Personal Best: <span id="sprint-highscore">0</span></div>
+            <button id="start-sprint-btn" class="btn btn-primary btn-lg"><i class="fa-solid fa-play"></i> Start Sprint</button>
+          </div>
+          <div class="sprint-canvas-container hidden" id="sprint-canvas-container">
+            <div class="game-hud">
+              <div>Score: <span id="sprint-score">0</span></div>
+              <div>Time: <span id="sprint-timer">60</span>s</div>
+              <div>Streak: <span id="sprint-streak">0</span></div>
+            </div>
+            <canvas id="sprint-canvas" width="800" height="350"></canvas>
+            <input type="text" id="sprint-input" class="sprint-word-input" placeholder="Type the word..." autocomplete="off">
+            <div class="game-overlay hidden" id="sprint-overlay">
+              <h2 id="sprint-overlay-title">TIME'S UP!</h2>
+              <p id="sprint-overlay-subtitle">Final Score: 0</p>
+              <button id="sprint-retry-btn" class="btn btn-primary">Play Again</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 5: Statistics -->
+    <section id="tab-stats" class="tab-content">
+      <div class="stats-grid">
+        <div class="card stat-card">
+          <div class="stat-number" id="stats-total-tests">0</div>
+          <div class="stat-desc">Tests Completed</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-number" id="stats-avg-wpm">0</div>
+          <div class="stat-desc">Average WPM</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-number" id="stats-high-wpm">0</div>
+          <div class="stat-desc">Highest WPM</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-number" id="stats-avg-accuracy">0%</div>
+          <div class="stat-desc">Average Accuracy</div>
+        </div>
+      </div>
+
+      <div class="card chart-card">
+        <h3>Performance History</h3>
+        <canvas id="stats-chart" height="200"></canvas>
+        <div class="history-table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date/Time</th>
+                <th>Mode</th>
+                <th>WPM</th>
+                <th>Accuracy</th>
+                <th>Raw WPM</th>
+              </tr>
+            </thead>
+            <tbody id="history-tbody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text-muted);">No tests yet. Start practicing!</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="history-actions">
+          <button id="clear-stats-btn" class="btn btn-secondary btn-sm"><i class="fa-regular fa-trash-can"></i> Clear History</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- On-Screen Keyboard -->
+  <footer class="keyboard-footer keyboard-hidden">
+    <div class="keyboard-container">
+      <div class="keyboard" id="onscreen-keyboard">
+        <div class="key-row">
+          <div class="key fn-key" id="key-Backquote">`</div>
+          <div class="key" id="key-Digit1">1</div>
+          <div class="key" id="key-Digit2">2</div>
+          <div class="key" id="key-Digit3">3</div>
+          <div class="key" id="key-Digit4">4</div>
+          <div class="key" id="key-Digit5">5</div>
+          <div class="key" id="key-Digit6">6</div>
+          <div class="key" id="key-Digit7">7</div>
+          <div class="key" id="key-Digit8">8</div>
+          <div class="key" id="key-Digit9">9</div>
+          <div class="key" id="key-Digit0">0</div>
+          <div class="key" id="key-Minus">-</div>
+          <div class="key" id="key-Equal">=</div>
+          <div class="key backspace-key" id="key-Backspace">Backspace</div>
+        </div>
+        <div class="key-row">
+          <div class="key tab-key" id="key-Tab">Tab</div>
+          <div class="key" id="key-KeyQ">Q</div>
+          <div class="key" id="key-KeyW">W</div>
+          <div class="key" id="key-KeyE">E</div>
+          <div class="key" id="key-KeyR">R</div>
+          <div class="key" id="key-KeyT">T</div>
+          <div class="key" id="key-KeyY">Y</div>
+          <div class="key" id="key-KeyU">U</div>
+          <div class="key" id="key-KeyI">I</div>
+          <div class="key" id="key-KeyO">O</div>
+          <div class="key" id="key-KeyP">P</div>
+          <div class="key" id="key-BracketLeft">[</div>
+          <div class="key" id="key-BracketRight">]</div>
+          <div class="key backslash-key" id="key-Backslash">\</div>
+        </div>
+        <div class="key-row">
+          <div class="key caps-key" id="key-CapsLock">Caps</div>
+          <div class="key" id="key-KeyA">A</div>
+          <div class="key" id="key-KeyS">S</div>
+          <div class="key" id="key-KeyD">D</div>
+          <div class="key key-bump" id="key-KeyF">F<span class="bump"></span></div>
+          <div class="key" id="key-KeyG">G</div>
+          <div class="key" id="key-KeyH">H</div>
+          <div class="key key-bump" id="key-KeyJ">J<span class="bump"></span></div>
+          <div class="key" id="key-KeyK">K</div>
+          <div class="key" id="key-KeyL">L</div>
+          <div class="key" id="key-Semicolon">;</div>
+          <div class="key" id="key-Quote">'</div>
+          <div class="key enter-key" id="key-Enter">Enter</div>
+        </div>
+        <div class="key-row">
+          <div class="key shift-key-left" id="key-ShiftLeft">Shift</div>
+          <div class="key" id="key-KeyZ">Z</div>
+          <div class="key" id="key-KeyX">X</div>
+          <div class="key" id="key-KeyC">C</div>
+          <div class="key" id="key-KeyV">V</div>
+          <div class="key" id="key-KeyB">B</div>
+          <div class="key" id="key-KeyN">N</div>
+          <div class="key" id="key-KeyM">M</div>
+          <div class="key" id="key-Comma">,</div>
+          <div class="key" id="key-Period">.</div>
+          <div class="key" id="key-Slash">/</div>
+          <div class="key shift-key-right" id="key-ShiftRight">Shift</div>
+        </div>
+        <div class="key-row">
+          <div class="key ctrl-key" id="key-ControlLeft">Ctrl</div>
+          <div class="key win-key" id="key-MetaLeft">Win</div>
+          <div class="key alt-key" id="key-AltLeft">Alt</div>
+          <div class="key space-key" id="key-Space">Space</div>
+          <div class="key alt-key" id="key-AltRight">Alt</div>
+          <div class="key win-key" id="key-MetaRight">Win</div>
+          <div class="key ctrl-key" id="key-ControlRight">Ctrl</div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
