@@ -1111,6 +1111,34 @@ nav {
   opacity: 0;
 }
 
+.creator-label {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  font-size: 0.85rem;
+  font-family: var(--font-heading);
+  color: var(--text-muted);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--bg-card);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-smooth);
+}
+
+.creator-label i {
+  color: var(--color-error);
+}
+
+.creator-label:hover {
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
 .light-theme .keyboard-footer {
   background-color: rgba(241, 245, 249, 0.95);
 }

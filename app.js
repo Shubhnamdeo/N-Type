@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('focusin', (e) => {
         if (e.target.tagName === 'INPUT' && !['gemini-api-key', 'ai-topic-input'].includes(e.target.id)) {
             toggleKeyboard(true);
+            
+            if (['keyboard-input', 'train-keyboard-input', 'ai-keyboard-input'].includes(e.target.id)) {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => console.log('Fullscreen blocked', err));
+                }
+            }
         }
     });
     document.addEventListener('focusout', (e) => {
