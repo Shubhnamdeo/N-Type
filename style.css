@@ -333,6 +333,54 @@ nav {
   color: var(--text-primary);
 }
 
+/* RGB Breathing Glow for AI Topic button */
+.nav-btn-rgb-glow {
+  position: relative;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  background: linear-gradient(rgba(18, 22, 34, 0.95), rgba(18, 22, 34, 0.95)) padding-box,
+              linear-gradient(90deg, #ff007f, #7928ca, #00f2fe, #4facfe, #00ff87, #ff007f) border-box !important;
+  border: 2px solid transparent !important;
+  background-size: 300% 300% !important;
+  animation: rgbBreathe 4s ease-in-out infinite alternate, rgbGradientMove 6s linear infinite;
+  box-shadow: 0 0 16px rgba(121, 40, 202, 0.4), 0 0 28px rgba(0, 242, 254, 0.25);
+}
+
+.nav-btn-rgb-glow .text-sparkle,
+.nav-btn-rgb-glow i {
+  color: #00f2fe;
+  text-shadow: 0 0 8px rgba(0, 242, 254, 0.7);
+  animation: rgbSparkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes rgbGradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes rgbBreathe {
+  0% {
+    box-shadow: 0 0 8px rgba(255, 0, 127, 0.3), 0 0 16px rgba(121, 40, 202, 0.2);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(0, 242, 254, 0.65), 0 0 38px rgba(79, 172, 254, 0.45);
+    transform: scale(1.02);
+  }
+  100% {
+    box-shadow: 0 0 18px rgba(0, 255, 135, 0.55), 0 0 32px rgba(255, 0, 127, 0.4);
+    transform: scale(1.01);
+  }
+}
+
+@keyframes rgbSparkle {
+  0% { color: #ff007f; text-shadow: 0 0 10px rgba(255, 0, 127, 0.8); }
+  33% { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.8); }
+  66% { color: #00ff87; text-shadow: 0 0 10px rgba(0, 255, 135, 0.8); }
+  100% { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); }
+}
+
 .nav-btn:hover {
   color: var(--text-primary);
   background-color: var(--bg-card);

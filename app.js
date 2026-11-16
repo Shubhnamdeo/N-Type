@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     const state = {
-        activeTab: 'training',
+        activeTab: 'ai-topic',
         currentRetryFn: null,
         practice: { text: '', currentIndex: 0, startTime: null, timer: null, timeLimit: 30, mode: 'time', category: 'quotes', errors: 0, typedKeys: 0, isActive: false, wpmHistory: [] },
         training: { activeLessonIndex: 0, text: '', currentIndex: 0, startTime: null, errors: 0, typedKeys: 0, isActive: false, completedLessons: new Set(JSON.parse(localStorage.getItem('ntype_training_progress')) || []) },
@@ -1494,7 +1494,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------------------------
     // 21. Initialization
     // ----------------------------------------------------
-    switchTab('training');
+    switchTab('ai-topic');
     
     // Set proper heights and initial state
     resizeBgCanvas();
